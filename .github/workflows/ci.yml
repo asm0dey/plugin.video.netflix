@@ -1,5 +1,11 @@
 name: CI
-on: [push, pull_request]
+on:
+  push:
+    branches-ignore:
+      - 'Leia'
+  pull_request:
+    branches-ignore:
+      - 'Leia'
 jobs:
   tests:
     name: Add-on testing
