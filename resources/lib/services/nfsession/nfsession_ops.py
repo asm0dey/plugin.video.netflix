@@ -168,7 +168,8 @@ class NFSessionOperations(SessionPathRequests):
             LOG.warn('The session data is not more valid ({})', type(exc).__name__)
             common.purge_credentials()
             self.session.cookies.clear()
-            common.send_signal(signal=common.Signals.CLEAR_USER_ID_TOKENS)
+            # Clear the user ID tokens are tied to the credentials
+            self.msl_handler.clear_user_id_tokens()
             raise NotLoggedInError from exc
 
     @measure_exec_time_decorator(is_immediate=True)
@@ -255,7 +256,7 @@ class NFSessionOperations(SessionPathRequests):
         # by checking if the red status bar of watched time position appears and will be updated, or also
         # if continueWatching list will be updated (e.g. try to play a new tvshow not contained in the "my list")
         call_paths = [['refreshVideoCurrentPositions']]
-        params = ['[' + video_id + ']', '[]']
+        params = [f'[{video_id}]', '[]']
         try:
             response = self.callpath_request(call_paths, params)
             LOG.debug('refreshVideoCurrentPositions response: {}', response)
